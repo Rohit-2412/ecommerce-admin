@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import Navbar from "@/components/navbar";
 import { auth } from "@clerk/nextjs";
 import prismadb from "@/lib/prismadb";
 import { redirect } from "next/navigation";
@@ -28,9 +29,9 @@ export default async function DashboardLayout({
     }
 
     return (
-        <Fragment>
-            <div>Navbar</div>
+        <>
+            <Navbar />
             {children}
-        </Fragment>
+        </>
     );
 }
