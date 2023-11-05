@@ -2,8 +2,6 @@
 
 import {
     Check,
-    CheckIcon,
-    ChevronDown,
     ChevronsUpDown,
     PlusCircle,
     Store as StoreIcon,
@@ -23,7 +21,6 @@ import { useParams, useRouter } from "next/navigation";
 import { Button } from "./button";
 import { PopoverTriggerProps } from "@radix-ui/react-popover";
 import { Store } from "@prisma/client";
-import { StoreModal } from "../modals/store-modal";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useStoreModal } from "@/hooks/use-store-modal";
@@ -81,7 +78,7 @@ export default function StoreSwitcher({
                             {formattedItems.map((store) => (
                                 <CommandItem
                                     key={store.value}
-                                    onSelect={() => onStoreSelect}
+                                    onSelect={() => onStoreSelect(store)}
                                     className="text-sm"
                                 >
                                     <StoreIcon className="mr-2 h-4 w-4" />
