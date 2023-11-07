@@ -24,6 +24,7 @@ import { Trash } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
+import { useOrigin } from "@/hooks/use-origin";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 interface SettingFormProps {
@@ -39,6 +40,7 @@ export const SettingsForm: React.FC<SettingFormProps> = ({ initialData }) => {
     const [loading, setLoading] = useState(false);
     const params = useParams();
     const router = useRouter();
+    const origin = useOrigin();
 
     const form = useForm<SettingFormValues>({
         resolver: zodResolver(formSchema),
