@@ -2,7 +2,6 @@
 
 import * as z from "zod";
 
-import { BillBoard, Category, Size } from "@prisma/client";
 import {
     Form,
     FormControl,
@@ -16,6 +15,7 @@ import { useParams, useRouter } from "next/navigation";
 
 import { AlertModal } from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
+import { Color } from "@prisma/client";
 import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -25,30 +25,35 @@ import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-interface SizeFormProps {
-    initialData: Size | null;
-    sizes: Size[];
+interface ColorFormProps {
+    initialData: Color | null;
+    colors: Color[];
 }
 
 const formSchema = z.object({
     name: z.string().min(1),
-    value: z.string().min(1),
+    value: z.string().min(4).regex(/^#/, {
+        message: "Must be a valid hex color code",
+    }),
 });
 
-type SizeFormValues = z.infer<typeof formSchema>;
+type ColorFormValues = z.infer<typeof formSchema>;
 
-export const SizeForm: React.FC<SizeFormProps> = ({ initialData, sizes }) => {
+export const ColorForm: React.FC<ColorFormProps> = ({
+    initialData,
+    colors,
+}) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const params = useParams();
     const router = useRouter();
 
-    const title = initialData ? "Edit Size" : "Create Size";
-    const description = initialData ? "Edit a Size" : "Add a new Size";
-    const toastMsg = initialData ? "Size updated" : "Size added";
+    const title = initialData ? "Edit Color" : "Create Color";
+    const description = initialData ? "Edit a Color" : "Add a new Color";
+    const toastMsg = initialData ? "Color updated" : "Color added";
     const action = initialData ? "Save changes" : "Create";
 
-    const form = useForm<SizeFormValues>({
+    const form = useForm<ColorFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: initialData || {
             name: "",
@@ -56,21 +61,21 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData, sizes }) => {
         },
     });
 
-    const onSubmit = async (data: SizeFormValues) => {
+    const onSubmit = async (data: ColorFormValues) => {
         try {
             setLoading(true);
             if (initialData) {
                 await axios.patch(
-                    `/api/${params.storeId}/sizes/${params.sizeId}`,
+                    `/api/${params.storeId}/colors/${params.colorId}`,
                     data
                 );
             } else {
-                await axios.post(`/api/${params.storeId}/sizes`, data);
+                await axios.post(`/api/${params.storeId}/colors`, data);
             }
 
             router.refresh();
             toast.success(toastMsg);
-            router.push(`/${params.storeId}/sizes`);
+            router.push(`/${params.storeId}/colors`);
         } catch (err) {
             toast.error("Something went wrong");
         } finally {
@@ -81,13 +86,15 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData, sizes }) => {
     const onDelete = async () => {
         try {
             setLoading(true);
-            await axios.delete(`/api/${params.storeId}/sizes/${params.sizeId}`);
+            await axios.delete(
+                `/api/${params.storeId}/colors/${params.colorId}`
+            );
             router.refresh();
-            router.push(`${params.storeId}/sizes`);
-            toast.success("Size deleted");
+            router.push(`/${params.storeId}/colors`);
+            toast.success("Color deleted");
         } catch (err) {
             toast.error(
-                "Make sure you have removed all products using this size first."
+                "Make sure you have removed all products using this color first."
             );
         } finally {
             setLoading(false);
@@ -132,7 +139,7 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData, sizes }) => {
                                     <FormControl>
                                         <Input
                                             disabled={loading}
-                                            placeholder="Size name"
+                                            placeholder="Color name"
                                             {...field}
                                         />
                                     </FormControl>
@@ -148,11 +155,21 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData, sizes }) => {
                                 <FormItem>
                                     <FormLabel>Value</FormLabel>
                                     <FormControl>
-                                        <Input
-                                            disabled={loading}
-                                            placeholder="Size value"
-                                            {...field}
-                                        />
+                                        <div className="flex items-center gap-x-4">
+                                            <Input
+                                                disabled={loading}
+                                                placeholder="Color value"
+                                                {...field}
+                                            />
+
+                                            <div
+                                                className="p-4 border rounded-full"
+                                                style={{
+                                                    backgroundColor:
+                                                        field.value,
+                                                }}
+                                            />
+                                        </div>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

@@ -96,7 +96,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
                 `/api/${params.storeId}/categories/${params.categoryId}`
             );
             router.refresh();
-            router.push(`${params.storeId}/categories}`);
+            router.push(`${params.storeId}/categories`);
             toast.success("Category deleted");
         } catch (err) {
             toast.error(
