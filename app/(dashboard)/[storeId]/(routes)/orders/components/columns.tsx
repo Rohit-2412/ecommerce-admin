@@ -1,21 +1,7 @@
 "use client";
 
-import { CellAction } from "./cell-action";
 import { ColumnDef } from "@tanstack/react-table";
 
-// id: item.id,
-//         phone: item.phone,
-//         address: item.address,
-//         products: item.orderItems
-//             .map((orderItem) => orderItem.product.name)
-//             .join(", "),
-//         totalPrice: formatter.format(
-//             item.orderItems.reduce(
-//                 (acc, item) => acc + Number(item.product.price),
-//                 0
-//             )
-//         ),
-//         createdAt: format(item.createdAt, "MMMM do, yyyy"),
 export type OrderColumn = {
     id: string;
     phone: string;
